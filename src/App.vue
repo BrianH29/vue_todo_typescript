@@ -1,29 +1,83 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div>
+    <header>
+      <h1>Vue + TypeScript TODO</h1>
+    </header>
+    <main>
+      <TodoInput
+        :todoItem="todoTitle"
+        @input="updateTodoTitle"
+        @add="addTodo"
+      ></TodoInput>
+      <div>
+        <ul>
+          <TodoList
+            v-for="(todoItem, index) in todoItems"
+            :key="index"
+            :todoItem="todoItem"
+          ></TodoList>
+        </ul>
+      </div>
+    </main>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import Vue from 'vue';
+import TodoInput from '@/components/TodoInput.vue';
+import TodoList from '@/components/TodoList.vue';
+
+const KEY = 'todo_key';
+
+const storage = {
+  save(toDo: Todo[]) {
+    const parse = JSON.stringify(toDo);
+    localStorage.setItem(KEY, parse);
+  },
+  fetch(): Todo[] {
+    return JSON.parse(localStorage.getItem(KEY) || '[]');
+  },
+};
+
+export interface Todo {
+  title: string;
+  done: boolean;
+}
 
 export default Vue.extend({
-  name: "App",
-  components: {
-    HelloWorld,
+  components: { TodoList, TodoInput },
+  data() {
+    return {
+      todoTitle: '',
+      todoItems: [] as Todo[],
+    };
+  },
+  created() {
+    this.fetchTodoList();
+  },
+  methods: {
+    updateTodoTitle(value: string) {
+      this.todoTitle = value;
+    },
+    addTodo() {
+      const todo: Todo = {
+        title: this.todoTitle,
+        done: false,
+      };
+
+      this.todoItems.push(todo);
+      storage.save(this.todoItems);
+      this.initForm();
+    },
+    initForm() {
+      this.todoTitle = '';
+      console.log(this.todoTitle);
+    },
+    fetchTodoList() {
+      this.todoItems = storage.fetch();
+    },
   },
 });
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style scoped></style>
