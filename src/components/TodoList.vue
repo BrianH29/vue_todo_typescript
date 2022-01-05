@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
+import { Todo } from '@/interface';
 import Vue, { PropType } from 'vue';
-import { Todo } from '@/App.vue';
 
 export default Vue.extend({
   props: {

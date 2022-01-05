@@ -28,6 +28,7 @@
 import Vue from 'vue';
 import TodoInput from '@/components/TodoInput.vue';
 import TodoList from '@/components/TodoList.vue';
+import { Todo } from './interface';
 
 const KEY = 'todo_key';
 
@@ -40,11 +41,6 @@ const storage = {
     return JSON.parse(localStorage.getItem(KEY) || '[]');
   },
 };
-
-export interface Todo {
-  title: string;
-  done: boolean;
-}
 
 export default Vue.extend({
   components: { TodoList, TodoInput },
